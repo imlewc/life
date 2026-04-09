@@ -4,12 +4,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Life Window Atlas</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Noto+Serif+SC:wght@500;600;700;900&amp;family=Space+Grotesk:wght@500;700&amp;display=swap"
-      rel="stylesheet"
-    />
     <style>
       :root {
         --bg: #f6eee3;
@@ -27,6 +21,9 @@
         --rose: #c95b4e;
         --shadow: 0 24px 72px rgba(59, 36, 19, 0.12);
         --radius: 28px;
+        --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+        --font-serif: ui-serif, Georgia, "Times New Roman", "Songti SC", "STSong", "Noto Serif CJK SC", serif;
+        --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", "PingFang SC", "Helvetica Neue", "Arial Narrow", sans-serif;
       }
 
       * {
@@ -41,7 +38,7 @@
         margin: 0;
         min-height: 100vh;
         color: var(--ink);
-        font-family: "Manrope", "PingFang SC", "Hiragino Sans GB", sans-serif;
+        font-family: var(--font-sans);
         background:
           radial-gradient(circle at top left, rgba(201, 91, 78, 0.18), transparent 26%),
           radial-gradient(circle at 85% 10%, rgba(46, 123, 119, 0.18), transparent 24%),
@@ -156,7 +153,7 @@
       h2,
       h3 {
         margin: 0;
-        font-family: "Noto Serif SC", "Songti SC", serif;
+        font-family: var(--font-serif);
       }
 
       .hero-copy h1 {
@@ -224,10 +221,11 @@
       }
 
       .age-display strong {
-        font-family: "Space Grotesk", sans-serif;
+        font-family: var(--font-display);
         font-size: clamp(68px, 11vw, 112px);
         line-height: 0.88;
         letter-spacing: -0.05em;
+        font-variant-numeric: tabular-nums;
       }
 
       .age-display span {
@@ -374,10 +372,11 @@
       }
 
       .summary-card strong {
-        font-family: "Space Grotesk", sans-serif;
+        font-family: var(--font-display);
         font-size: clamp(36px, 6vw, 52px);
         line-height: 0.95;
         letter-spacing: -0.04em;
+        font-variant-numeric: tabular-nums;
       }
 
       .summary-card p {
