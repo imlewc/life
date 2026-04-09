@@ -1,0 +1,1681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Life Window Atlas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&amp;family=Noto+Serif+SC:wght@500;600;700;900&amp;family=Space+Grotesk:wght@500;700&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f6eee3;
+        --bg-2: #efe4d5;
+        --paper: rgba(255, 250, 244, 0.78);
+        --paper-strong: rgba(255, 248, 241, 0.94);
+        --ink: #20170f;
+        --muted: #655445;
+        --line: rgba(32, 23, 15, 0.12);
+        --line-strong: rgba(32, 23, 15, 0.2);
+        --gold: #b9772f;
+        --amber: #d68b3e;
+        --teal: #2e7b77;
+        --sage: #7d9b74;
+        --rose: #c95b4e;
+        --shadow: 0 24px 72px rgba(59, 36, 19, 0.12);
+        --radius: 28px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        color: var(--ink);
+        font-family: "Manrope", "PingFang SC", "Hiragino Sans GB", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(201, 91, 78, 0.18), transparent 26%),
+          radial-gradient(circle at 85% 10%, rgba(46, 123, 119, 0.18), transparent 24%),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+      }
+
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        inset: auto;
+        border-radius: 999px;
+        pointer-events: none;
+        z-index: 0;
+        filter: blur(60px);
+        opacity: 0.65;
+      }
+
+      body::before {
+        width: 280px;
+        height: 280px;
+        top: -64px;
+        right: 8%;
+        background: rgba(214, 139, 62, 0.24);
+      }
+
+      body::after {
+        width: 260px;
+        height: 260px;
+        bottom: 8%;
+        left: -60px;
+        background: rgba(46, 123, 119, 0.16);
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      .page-shell {
+        position: relative;
+        z-index: 1;
+        width: min(1280px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 32px 0 72px;
+      }
+
+      .panel {
+        position: relative;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.78), rgba(255, 246, 237, 0.92));
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(18px);
+      }
+
+      .panel-dark {
+        color: #fff7ef;
+        border-color: rgba(255, 247, 239, 0.14);
+        background:
+          radial-gradient(circle at 0% 0%, rgba(214, 139, 62, 0.28), transparent 34%),
+          linear-gradient(145deg, #23160f 0%, #3d2619 46%, #5a3420 100%);
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.28fr) minmax(360px, 0.92fr);
+        gap: 24px;
+        align-items: stretch;
+      }
+
+      .hero-copy,
+      .control-card {
+        min-height: 520px;
+      }
+
+      .hero-copy {
+        overflow: hidden;
+        padding: 48px;
+      }
+
+      .hero-copy::before {
+        content: "";
+        position: absolute;
+        width: 340px;
+        height: 340px;
+        top: -110px;
+        right: -80px;
+        border-radius: 999px;
+        background: radial-gradient(circle, rgba(255, 241, 220, 0.26), rgba(255, 241, 220, 0));
+      }
+
+      .kicker,
+      .section-label {
+        margin: 0;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      .kicker {
+        color: rgba(255, 232, 203, 0.76);
+      }
+
+      .section-label {
+        color: var(--gold);
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-family: "Noto Serif SC", "Songti SC", serif;
+      }
+
+      .hero-copy h1 {
+        max-width: 10ch;
+        margin-top: 20px;
+        font-size: clamp(44px, 7vw, 78px);
+        line-height: 1.06;
+        letter-spacing: -0.03em;
+      }
+
+      .lead {
+        max-width: 50ch;
+        margin: 20px 0 0;
+        font-size: clamp(16px, 2vw, 19px);
+        line-height: 1.8;
+        color: rgba(255, 242, 228, 0.82);
+      }
+
+      .hero-metrics {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 32px;
+      }
+
+      .metric-chip {
+        min-width: 168px;
+        padding: 16px 18px;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 247, 239, 0.14);
+        background: rgba(255, 247, 239, 0.08);
+      }
+
+      .metric-chip strong {
+        display: block;
+        font-size: 24px;
+        line-height: 1.1;
+        color: #fff9f1;
+      }
+
+      .metric-chip span {
+        display: block;
+        margin-top: 8px;
+        font-size: 13px;
+        color: rgba(255, 235, 210, 0.72);
+      }
+
+      .control-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 32px;
+      }
+
+      .age-stack {
+        display: grid;
+        gap: 18px;
+      }
+
+      .age-display {
+        display: flex;
+        align-items: flex-end;
+        gap: 12px;
+      }
+
+      .age-display strong {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(68px, 11vw, 112px);
+        line-height: 0.88;
+        letter-spacing: -0.05em;
+      }
+
+      .age-display span {
+        padding-bottom: 14px;
+        font-size: 20px;
+        color: var(--muted);
+      }
+
+      .slider-wrap {
+        display: grid;
+        gap: 10px;
+      }
+
+      .age-range {
+        width: 100%;
+        height: 12px;
+        margin: 0;
+        border-radius: 999px;
+        appearance: none;
+        background: linear-gradient(90deg, var(--gold) 0%, var(--gold) 30%, rgba(32, 23, 15, 0.08) 30%, rgba(32, 23, 15, 0.08) 100%);
+        outline: none;
+      }
+
+      .age-range::-webkit-slider-thumb {
+        appearance: none;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 4px solid #fff8ef;
+        background: linear-gradient(180deg, #d68b3e, #b9772f);
+        box-shadow: 0 10px 24px rgba(185, 119, 47, 0.34);
+        cursor: pointer;
+      }
+
+      .age-range::-moz-range-thumb {
+        width: 28px;
+        height: 28px;
+        border: 4px solid #fff8ef;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #d68b3e, #b9772f);
+        box-shadow: 0 10px 24px rgba(185, 119, 47, 0.34);
+        cursor: pointer;
+      }
+
+      .scale-row {
+        display: flex;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .preset-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .preset-btn {
+        padding: 11px 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: rgba(255, 250, 244, 0.78);
+        color: var(--ink);
+        cursor: pointer;
+        transition: transform 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+      }
+
+      .preset-btn:hover,
+      .preset-btn:focus-visible {
+        transform: translateY(-2px);
+        border-color: rgba(185, 119, 47, 0.48);
+        outline: none;
+      }
+
+      .preset-btn.is-active {
+        background: rgba(185, 119, 47, 0.12);
+        border-color: rgba(185, 119, 47, 0.56);
+        color: var(--gold);
+      }
+
+      .stage-box {
+        display: grid;
+        gap: 12px;
+        padding: 18px 20px;
+        border-radius: 24px;
+        border: 1px solid rgba(46, 123, 119, 0.18);
+        background: linear-gradient(180deg, rgba(46, 123, 119, 0.08), rgba(255, 255, 255, 0.46));
+      }
+
+      .stage-topline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+
+      .stage-tag {
+        color: var(--teal);
+        font-weight: 700;
+      }
+
+      .pressure-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 10px;
+        border-radius: 999px;
+        font-size: 12px;
+        color: var(--rose);
+        background: rgba(201, 91, 78, 0.08);
+      }
+
+      .stage-box h2 {
+        font-size: clamp(26px, 4vw, 34px);
+      }
+
+      .stage-box p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .summary-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      .summary-card {
+        display: grid;
+        gap: 14px;
+        min-height: 156px;
+        padding: 22px;
+        border-radius: 24px;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, rgba(255, 250, 244, 0.75), rgba(255, 247, 238, 0.96));
+        box-shadow: var(--shadow);
+      }
+
+      .summary-card span {
+        color: var(--muted);
+      }
+
+      .summary-card strong {
+        font-family: "Space Grotesk", sans-serif;
+        font-size: clamp(36px, 6vw, 52px);
+        line-height: 0.95;
+        letter-spacing: -0.04em;
+      }
+
+      .summary-card p {
+        margin: 0;
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .summary-card[data-tone="prime"] strong {
+        color: var(--sage);
+      }
+
+      .summary-card[data-tone="rescue"] strong {
+        color: var(--amber);
+      }
+
+      .summary-card[data-tone="upcoming"] strong {
+        color: var(--teal);
+      }
+
+      .summary-card[data-tone="closed"] strong {
+        color: var(--rose);
+      }
+
+      .focus-panel {
+        display: grid;
+        grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+        gap: 0;
+        margin-top: 20px;
+        overflow: hidden;
+      }
+
+      .focus-copy,
+      .focus-side {
+        padding: 30px;
+      }
+
+      .focus-copy {
+        background: linear-gradient(180deg, rgba(255, 248, 240, 0.88), rgba(255, 245, 233, 0.8));
+      }
+
+      .focus-side {
+        border-left: 1px solid var(--line);
+        background:
+          radial-gradient(circle at top right, rgba(185, 119, 47, 0.16), transparent 46%),
+          linear-gradient(180deg, rgba(255, 253, 250, 0.52), rgba(250, 242, 232, 0.94));
+      }
+
+      .focus-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .focus-status {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .focus-status[data-state="prime"] {
+        color: var(--sage);
+        background: rgba(125, 155, 116, 0.14);
+      }
+
+      .focus-status[data-state="rescue"] {
+        color: var(--amber);
+        background: rgba(214, 139, 62, 0.14);
+      }
+
+      .focus-status[data-state="upcoming"] {
+        color: var(--teal);
+        background: rgba(46, 123, 119, 0.14);
+      }
+
+      .focus-status[data-state="closed"] {
+        color: var(--rose);
+        background: rgba(201, 91, 78, 0.14);
+      }
+
+      .focus-category {
+        margin-top: 18px;
+        color: var(--gold);
+        font-weight: 700;
+      }
+
+      .focus-copy h2 {
+        margin-top: 12px;
+        font-size: clamp(34px, 5vw, 50px);
+        line-height: 1.14;
+      }
+
+      .focus-copy p {
+        margin: 16px 0 0;
+        max-width: 52ch;
+        line-height: 1.82;
+        color: var(--muted);
+      }
+
+      .focus-advice {
+        padding-left: 18px;
+        border-left: 3px solid rgba(185, 119, 47, 0.34);
+        color: var(--ink);
+      }
+
+      .timeline-shell {
+        display: grid;
+        gap: 12px;
+        padding: 18px;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background: rgba(255, 250, 244, 0.72);
+      }
+
+      .timeline-shell h3 {
+        font-size: 18px;
+      }
+
+      .timeline-shell p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .focus-track {
+        position: relative;
+        height: 18px;
+        border-radius: 999px;
+        background: rgba(32, 23, 15, 0.08);
+        overflow: hidden;
+      }
+
+      .track-prime,
+      .track-rescue,
+      .track-marker {
+        position: absolute;
+      }
+
+      .track-prime,
+      .track-rescue {
+        top: 0;
+        bottom: 0;
+        border-radius: 999px;
+      }
+
+      .track-prime {
+        background: linear-gradient(90deg, rgba(46, 123, 119, 0.22), rgba(125, 155, 116, 0.66));
+      }
+
+      .track-rescue {
+        background: linear-gradient(90deg, rgba(214, 139, 62, 0.16), rgba(214, 139, 62, 0.72));
+      }
+
+      .track-marker {
+        top: -6px;
+        width: 14px;
+        height: 30px;
+        border-radius: 999px;
+        background: linear-gradient(180deg, var(--ink), rgba(32, 23, 15, 0.7));
+        transform: translateX(-50%);
+        box-shadow: 0 14px 28px rgba(32, 23, 15, 0.18);
+      }
+
+      .timeline-labels {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .focus-stats {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+
+      .focus-stats div {
+        padding: 16px;
+        border-radius: 20px;
+        background: rgba(255, 250, 244, 0.72);
+        border: 1px solid rgba(32, 23, 15, 0.08);
+      }
+
+      .focus-stats span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .focus-stats strong {
+        display: block;
+        margin-top: 8px;
+        font-size: 20px;
+      }
+
+      .windows-section {
+        margin-top: 26px;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: end;
+        margin-bottom: 16px;
+      }
+
+      .section-header h2 {
+        margin-top: 10px;
+        font-size: clamp(30px, 4vw, 42px);
+      }
+
+      .section-note {
+        max-width: 32ch;
+        margin: 0;
+        line-height: 1.75;
+        color: var(--muted);
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 18px;
+      }
+
+      .window-card {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto 1fr auto auto;
+        gap: 18px;
+        width: 100%;
+        min-height: 348px;
+        padding: 22px;
+        border: 1px solid var(--line);
+        border-radius: 24px;
+        text-align: left;
+        color: var(--ink);
+        background: linear-gradient(180deg, rgba(255, 252, 248, 0.74), rgba(255, 247, 239, 0.96));
+        box-shadow: var(--shadow);
+        cursor: pointer;
+        transition: transform 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease;
+        animation: reveal 0.55s ease both;
+        animation-delay: var(--delay, 0ms);
+      }
+
+      .window-card::after {
+        content: "";
+        position: absolute;
+        inset: auto auto 0 0;
+        width: 100%;
+        height: 40%;
+        background: linear-gradient(180deg, rgba(255, 255, 255, 0), rgba(185, 119, 47, 0.03));
+        pointer-events: none;
+      }
+
+      .window-card:hover,
+      .window-card:focus-visible {
+        transform: translateY(-6px);
+        outline: none;
+      }
+
+      .window-card.is-selected {
+        border-color: rgba(185, 119, 47, 0.56);
+        box-shadow: 0 26px 80px rgba(185, 119, 47, 0.18);
+      }
+
+      .window-card[data-state="upcoming"] {
+        background: linear-gradient(180deg, rgba(238, 250, 249, 0.82), rgba(255, 250, 244, 0.95));
+      }
+
+      .window-card[data-state="prime"] {
+        background: linear-gradient(180deg, rgba(246, 251, 243, 0.9), rgba(255, 250, 244, 0.96));
+      }
+
+      .window-card[data-state="rescue"] {
+        background: linear-gradient(180deg, rgba(255, 246, 233, 0.9), rgba(255, 250, 244, 0.96));
+      }
+
+      .window-card[data-state="closed"] {
+        background: linear-gradient(180deg, rgba(255, 241, 238, 0.86), rgba(255, 248, 243, 0.96));
+      }
+
+      .card-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+
+      .cat-chip,
+      .state-chip {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        white-space: nowrap;
+      }
+
+      .cat-chip {
+        padding: 8px 12px;
+        background: rgba(32, 23, 15, 0.06);
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--muted);
+      }
+
+      .state-chip {
+        padding: 7px 10px;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .window-card[data-state="upcoming"] .state-chip {
+        color: var(--teal);
+        background: rgba(46, 123, 119, 0.12);
+      }
+
+      .window-card[data-state="prime"] .state-chip {
+        color: var(--sage);
+        background: rgba(125, 155, 116, 0.16);
+      }
+
+      .window-card[data-state="rescue"] .state-chip {
+        color: var(--amber);
+        background: rgba(214, 139, 62, 0.16);
+      }
+
+      .window-card[data-state="closed"] .state-chip {
+        color: var(--rose);
+        background: rgba(201, 91, 78, 0.16);
+      }
+
+      .window-card h3 {
+        font-size: 28px;
+        line-height: 1.24;
+      }
+
+      .window-card p {
+        margin: 12px 0 0;
+        color: var(--muted);
+        line-height: 1.75;
+      }
+
+      .mini-timeline {
+        position: relative;
+        height: 14px;
+        border-radius: 999px;
+        background: rgba(32, 23, 15, 0.08);
+        overflow: hidden;
+      }
+
+      .mini-band,
+      .mini-marker {
+        position: absolute;
+      }
+
+      .mini-band {
+        top: 0;
+        bottom: 0;
+        border-radius: 999px;
+      }
+
+      .mini-band.prime {
+        background: linear-gradient(90deg, rgba(46, 123, 119, 0.18), rgba(125, 155, 116, 0.62));
+      }
+
+      .mini-band.rescue {
+        background: linear-gradient(90deg, rgba(214, 139, 62, 0.12), rgba(214, 139, 62, 0.66));
+      }
+
+      .mini-marker {
+        top: -5px;
+        width: 12px;
+        height: 24px;
+        border-radius: 999px;
+        background: var(--ink);
+        transform: translateX(-50%);
+      }
+
+      .card-meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .card-meta div {
+        padding: 12px 14px;
+        border-radius: 18px;
+        background: rgba(255, 255, 255, 0.42);
+        border: 1px solid rgba(32, 23, 15, 0.06);
+      }
+
+      .card-meta span,
+      .card-note {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .card-meta strong {
+        display: block;
+        margin-top: 6px;
+        font-size: 15px;
+      }
+
+      .card-note {
+        position: relative;
+        z-index: 1;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .footer {
+        margin-top: 30px;
+        padding: 22px 6px 0;
+        border-top: 1px solid rgba(32, 23, 15, 0.08);
+        color: var(--muted);
+        line-height: 1.8;
+      }
+
+      @keyframes reveal {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 1080px) {
+        .hero,
+        .focus-panel {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-copy,
+        .control-card {
+          min-height: auto;
+        }
+
+        .focus-side {
+          border-left: 0;
+          border-top: 1px solid var(--line);
+        }
+
+        .summary-grid {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page-shell {
+          width: min(100% - 20px, 100%);
+          padding-top: 18px;
+        }
+
+        .hero-copy,
+        .control-card,
+        .focus-copy,
+        .focus-side {
+          padding: 24px;
+        }
+
+        .hero-copy h1 {
+          max-width: 12ch;
+          font-size: clamp(38px, 13vw, 54px);
+        }
+
+        .summary-grid,
+        .focus-stats,
+        .card-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .section-header {
+          align-items: start;
+          flex-direction: column;
+        }
+
+        .window-card {
+          min-height: 320px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page-shell">
+      <section class="hero">
+        <article class="hero-copy panel panel-dark">
+          <p class="kicker">Life Window Atlas</p>
+          <h1>人生不是平均展开的，它是分批开启的。</h1>
+          <p class="lead">
+            现在这个版本把 0-18 岁的关键期也并进来了。前半段偏生物发育与人格底层，后半段偏社会选择与资源配置。拖动年龄，页面会实时重排每个窗口的状态，让“待开启、黄金期、补救期、已关闭”四种节奏一眼能看懂。
+          </p>
+          <div class="hero-metrics">
+            <div class="metric-chip">
+              <strong id="metricWindowCount">22</strong>
+              <span>当前录入的关键窗口</span>
+            </div>
+            <div class="metric-chip">
+              <strong id="metricCategoryCount">12</strong>
+              <span>覆盖感知、思维、学业、事业、家庭等议题</span>
+            </div>
+            <div class="metric-chip">
+              <strong id="metricAgeSpan">0-70</strong>
+              <span>从神经布线到照护收束的年龄跨度</span>
+            </div>
+          </div>
+        </article>
+
+        <aside class="control-card panel">
+          <p class="section-label">Age Simulator</p>
+          <div class="age-stack">
+            <div class="age-display">
+              <strong id="ageValue">12</strong>
+              <span>岁</span>
+            </div>
+            <div class="slider-wrap">
+              <input
+                id="ageRange"
+                class="age-range"
+                type="range"
+                min="0"
+                max="80"
+                value="12"
+                aria-label="年龄滑块"
+              />
+              <div class="scale-row">
+                <span>0 岁</span>
+                <span>中段 40 岁</span>
+                <span>80 岁</span>
+              </div>
+            </div>
+          </div>
+
+          <div id="presetRow" class="preset-row"></div>
+
+          <section class="stage-box">
+            <div class="stage-topline">
+              <span id="stageTag" class="stage-tag"></span>
+              <span id="pressureBadge" class="pressure-badge"></span>
+            </div>
+            <h2 id="stageTitle"></h2>
+            <p id="stageDesc"></p>
+          </section>
+        </aside>
+      </section>
+
+      <section id="summaryGrid" class="summary-grid" aria-label="状态摘要"></section>
+
+      <section class="focus-panel panel" aria-label="当前焦点窗口">
+        <div class="focus-copy">
+          <div class="focus-header">
+            <p class="section-label">Focus</p>
+            <span id="focusStatus" class="focus-status"></span>
+          </div>
+          <div id="focusCategory" class="focus-category"></div>
+          <h2 id="focusTitle"></h2>
+          <p id="focusDesc"></p>
+          <p id="focusAdvice" class="focus-advice"></p>
+        </div>
+
+        <div class="focus-side">
+          <div class="timeline-shell">
+            <h3>年龄轨道</h3>
+            <p id="focusTimelineText"></p>
+            <div class="focus-track">
+              <span id="focusPrime" class="track-prime"></span>
+              <span id="focusRescue" class="track-rescue"></span>
+              <span id="focusMarker" class="track-marker"></span>
+            </div>
+            <div class="timeline-labels">
+              <span>0</span>
+              <span id="focusCountdown"></span>
+              <span>80</span>
+            </div>
+          </div>
+
+          <div class="focus-stats">
+            <div>
+              <span>最佳执行期</span>
+              <strong id="focusRange"></strong>
+            </div>
+            <div>
+              <span>锁定年龄</span>
+              <strong id="focusLock"></strong>
+            </div>
+            <div>
+              <span>锁死强度</span>
+              <strong id="focusPenalty"></strong>
+            </div>
+            <div>
+              <span>补偿成本</span>
+              <strong id="focusCost"></strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="windows-section" aria-labelledby="windowSectionTitle">
+        <div class="section-header">
+          <div>
+            <p class="section-label">Timeline Windows</p>
+            <h2 id="windowSectionTitle">22 个关键人生窗口</h2>
+          </div>
+          <p class="section-note">
+            卡片会按当前年龄自动排序。点击任意卡片，上方的焦点区域会切换到对应窗口。
+          </p>
+        </div>
+
+        <div id="cardsGrid" class="cards-grid"></div>
+      </section>
+
+      <footer class="footer">
+        把年龄看成有摩擦的系统，而不是均匀的直线。这个版本已经扩成全年龄版，低龄窗口和成年窗口共用同一套状态规则；后面如果你要继续做成内容平台，可以再把数据抽成 CMS
+        或接口配置。
+      </footer>
+    </main>
+
+    <script id="windowsData" type="application/json">
+      [
+        {
+          "id": 101,
+          "cat": "感知",
+          "title": "视听觉布线",
+          "range": [0, 3],
+          "lock": 6,
+          "penalty": "98%",
+          "cost": "Extreme",
+          "desc": "视觉与听觉皮层的关键发育期，若弱视或听力问题未及时干预，后期补救空间极小。"
+        },
+        {
+          "id": 102,
+          "cat": "能力",
+          "title": "精细动作发育",
+          "range": [1, 4],
+          "lock": 7,
+          "penalty": "82%",
+          "cost": "High",
+          "desc": "抓握、手眼协调与动作控制的底层硬件窗口，为书写、乐器和高精度操作打底。"
+        },
+        {
+          "id": 103,
+          "cat": "健康",
+          "title": "感统协调期",
+          "range": [2, 6],
+          "lock": 10,
+          "penalty": "78%",
+          "cost": "High",
+          "desc": "身体平衡、空间感与本体感的整合期，错过后更易出现动作笨拙与注意力问题。"
+        },
+        {
+          "id": 104,
+          "cat": "能力",
+          "title": "第二语言母语化",
+          "range": [3, 7],
+          "lock": 12,
+          "penalty": "88%",
+          "cost": "Extreme",
+          "desc": "利用语言关键期直接建立语音系统，错过后更容易依赖翻译式学习，口音也更难消除。"
+        },
+        {
+          "id": 105,
+          "cat": "思维",
+          "title": "数感直觉建立",
+          "range": [6, 12],
+          "lock": 15,
+          "penalty": "60%",
+          "cost": "High",
+          "desc": "底层逻辑思维与抽象科学理解力的形成期，具象体验比后期硬啃公式更有效。"
+        },
+        {
+          "id": 106,
+          "cat": "感知",
+          "title": "绝对音感窗口",
+          "range": [3, 6],
+          "lock": 9,
+          "penalty": "95%",
+          "cost": "Extreme",
+          "desc": "大脑听觉神经对频率的敏感发育期，错过后几乎无法通过训练获得。"
+        },
+        {
+          "id": 107,
+          "cat": "心理",
+          "title": "底层安全感",
+          "range": [0, 3],
+          "lock": 5,
+          "penalty": "85%",
+          "cost": "Extreme",
+          "desc": "人格底色的构建期，若长期缺乏稳定回应与依恋，成年后更易进入焦虑或回避模式。"
+        },
+        {
+          "id": 108,
+          "cat": "心理",
+          "title": "情绪调节窗口",
+          "range": [4, 10],
+          "lock": 14,
+          "penalty": "72%",
+          "cost": "High",
+          "desc": "学习处理愤怒、挫折与延迟满足的关键期，错过后青春期情绪系统更容易失衡。"
+        },
+        {
+          "id": 109,
+          "cat": "心理",
+          "title": "自我意识觉醒",
+          "range": [12, 18],
+          "lock": 22,
+          "penalty": "75%",
+          "cost": "High",
+          "desc": "寻找“我是谁”的整合窗口，若长期被压抑，成年后更容易出现空心感与长期失向。"
+        },
+        {
+          "id": 110,
+          "cat": "生理",
+          "title": "身高干预黄金期",
+          "range": [5, 12],
+          "lock": 18,
+          "penalty": "90%",
+          "cost": "Extreme",
+          "desc": "骨骺线关闭前的最后干预机会，睡眠、营养和运动的杠杆在这段时间最明显。"
+        },
+        {
+          "id": 1,
+          "cat": "能力",
+          "title": "语言学习黄金期",
+          "range": [3, 15],
+          "lock": 18,
+          "penalty": "45%",
+          "cost": "Medium",
+          "desc": "母语级口音及自然吸收能力窗口。"
+        },
+        {
+          "id": 2,
+          "cat": "学业",
+          "title": "第一学历跃迁",
+          "range": [18, 25],
+          "lock": 30,
+          "penalty": "70%",
+          "cost": "High",
+          "desc": "错过后职业入口折扣极高，补救门槛极高。"
+        },
+        {
+          "id": 3,
+          "cat": "健康",
+          "title": "牙齿正畸黄金期",
+          "range": [12, 18],
+          "lock": 35,
+          "penalty": "60%",
+          "cost": "High",
+          "desc": "成年后强行矫正易导致牙套脸及牙根吸收。"
+        },
+        {
+          "id": 4,
+          "cat": "生理",
+          "title": "生育窗口期",
+          "range": [24, 38],
+          "lock": 45,
+          "penalty": "95%",
+          "cost": "Extreme",
+          "desc": "受生理极限锁死，后期成功率直线下降。"
+        },
+        {
+          "id": 5,
+          "cat": "事业",
+          "title": "高强度试错创业",
+          "range": [22, 32],
+          "lock": 40,
+          "penalty": "60%",
+          "cost": "High",
+          "desc": "无房贷、无子女、精力巅峰。后期风险耐受力萎缩。"
+        },
+        {
+          "id": 6,
+          "cat": "财务",
+          "title": "财务复利启动",
+          "range": [20, 30],
+          "lock": 45,
+          "penalty": "30%",
+          "cost": "Medium",
+          "desc": "启动越早，晚年财务自由难度越低。"
+        },
+        {
+          "id": 7,
+          "cat": "心理",
+          "title": "心智原动力窗口",
+          "range": [15, 28],
+          "lock": 35,
+          "penalty": "85%",
+          "cost": "Extreme",
+          "desc": "对世界纯粹的好奇心，锁死后易变为何事都枯燥。"
+        },
+        {
+          "id": 8,
+          "cat": "社会",
+          "title": "跨国/迁移低成本",
+          "range": [18, 30],
+          "lock": 40,
+          "penalty": "65%",
+          "cost": "High",
+          "desc": "随年龄增长，房贷、姻亲形成重力抽吸。"
+        },
+        {
+          "id": 9,
+          "cat": "健康",
+          "title": "深睡恢复窗口",
+          "range": [15, 25],
+          "lock": 28,
+          "penalty": "90%",
+          "cost": "Extreme",
+          "desc": "28岁后熬夜一次，数日难复原。"
+        },
+        {
+          "id": 10,
+          "cat": "家庭",
+          "title": "老人安宁照护",
+          "range": [40, 60],
+          "lock": 70,
+          "penalty": "90%",
+          "cost": "N/A",
+          "desc": "与父母深度告别的最后窗口，错过即永久关闭。"
+        },
+        {
+          "id": 11,
+          "cat": "能力",
+          "title": "高强度专业训练",
+          "range": [15, 28],
+          "lock": 35,
+          "penalty": "55%",
+          "cost": "High",
+          "desc": "一万小时定律黄金期，需极高专注度。"
+        },
+        {
+          "id": 12,
+          "cat": "认知",
+          "title": "认知框架重塑",
+          "range": [18, 35],
+          "lock": 45,
+          "penalty": "45%",
+          "cost": "High",
+          "desc": "大脑可塑性较高期，后期思维定式难以打破。"
+        }
+      ]
+    </script>
+
+    <script>
+      const MAX_AGE = 80;
+      const PRESETS = [0, 3, 6, 12, 18, 25, 32, 45, 60];
+
+      const STAGE_STORIES = [
+        {
+          min: 0,
+          max: 3,
+          tag: "神经布线期",
+          title: "世界先通过身体进入大脑，底层系统在这一段被快速写入。",
+          desc: "视听觉、安全感和依恋质量都集中在这里布线。这个阶段的损失往往不是“以后再补”，而是大脑会直接按缺口长成默认设置。"
+        },
+        {
+          min: 4,
+          max: 6,
+          tag: "协调启蒙期",
+          title: "动作、情绪与语言模仿开始同步成型，关键期密度极高。",
+          desc: "感统、精细动作、音感和情绪调节会在这一段同时起作用。稳定的环境输入和重复练习，比后面更猛烈的补课都有效。"
+        },
+        {
+          min: 7,
+          max: 12,
+          tag: "逻辑塑形期",
+          title: "数感、第二语言和身体发育进入持续塑形阶段。",
+          desc: "逻辑直觉、学习习惯与身高干预会在这里拉开差距。很多看似普通的家庭日常，在这一段会变成长期的能力分层。"
+        },
+        {
+          min: 13,
+          max: 18,
+          tag: "方向分叉期",
+          title: "自我意识、专业训练和学业路径开始互相绑定。",
+          desc: "青春期不是单一窗口，而是多个窗口同时叠加。这个阶段最怕的是长期压抑与拖延决策，因为很多关键节点会一起关闭。"
+        },
+        {
+          min: 19,
+          max: 28,
+          tag: "高速跃迁期",
+          title: "试错成本低，跃迁速度快，适合主动压缩路径。",
+          desc: "学历、创业、财务复利、迁移、深睡恢复等窗口大多在这里交汇。做对几件事，后面的压力会显著下降。"
+        },
+        {
+          min: 29,
+          max: 38,
+          tag: "承压定盘期",
+          title: "从拼速度转向拼组合，窗口开始逐步收紧。",
+          desc: "这个阶段依然能调整，但已经不能把所有事情都往后拖。需要更清楚地决定家庭、职业和财务结构的优先级。"
+        },
+        {
+          min: 39,
+          max: 50,
+          tag: "重心再配置期",
+          title: "责任密度上升，资源配置比纯体力冲刺更重要。",
+          desc: "很多早期窗口已经结束，剩下的更偏向长期关系和深层结构调整。需要把照护、资产、职业可持续性同时放进一张表里。"
+        },
+        {
+          min: 51,
+          max: 80,
+          tag: "关系照护期",
+          title: "最重要的窗口不再是扩张，而是修复、陪伴和交接。",
+          desc: "这个阶段的高价值行动，通常和健康管理、照护关系、时间质量有关。窗口不一定少，只是回报函数已经改变。"
+        }
+      ];
+
+      const STATE_META = {
+        upcoming: {
+          label: "待开启",
+          note: "还没进入窗口，越早布局越能在开启时降低试错成本。"
+        },
+        prime: {
+          label: "黄金期",
+          note: "当前正处在回报最高的时间段，行动杠杆最大。"
+        },
+        rescue: {
+          label: "补救期",
+          note: "窗口正在收紧，依然可做，但代价已明显上升。"
+        },
+        closed: {
+          label: "已关闭",
+          note: "已经越过锁定年龄，只能用更高成本做局部回补。"
+        }
+      };
+
+      const refs = {
+        ageValue: document.getElementById("ageValue"),
+        ageRange: document.getElementById("ageRange"),
+        presetRow: document.getElementById("presetRow"),
+        metricWindowCount: document.getElementById("metricWindowCount"),
+        metricCategoryCount: document.getElementById("metricCategoryCount"),
+        metricAgeSpan: document.getElementById("metricAgeSpan"),
+        stageTag: document.getElementById("stageTag"),
+        stageTitle: document.getElementById("stageTitle"),
+        stageDesc: document.getElementById("stageDesc"),
+        pressureBadge: document.getElementById("pressureBadge"),
+        summaryGrid: document.getElementById("summaryGrid"),
+        focusStatus: document.getElementById("focusStatus"),
+        focusCategory: document.getElementById("focusCategory"),
+        focusTitle: document.getElementById("focusTitle"),
+        focusDesc: document.getElementById("focusDesc"),
+        focusAdvice: document.getElementById("focusAdvice"),
+        focusTimelineText: document.getElementById("focusTimelineText"),
+        focusCountdown: document.getElementById("focusCountdown"),
+        focusRange: document.getElementById("focusRange"),
+        focusLock: document.getElementById("focusLock"),
+        focusPenalty: document.getElementById("focusPenalty"),
+        focusCost: document.getElementById("focusCost"),
+        focusPrime: document.getElementById("focusPrime"),
+        focusRescue: document.getElementById("focusRescue"),
+        focusMarker: document.getElementById("focusMarker"),
+        windowSectionTitle: document.getElementById("windowSectionTitle"),
+        cardsGrid: document.getElementById("cardsGrid")
+      };
+
+      let age = Number(refs.ageRange.value);
+      let windows = [];
+      let selectedId = null;
+
+      function percentage(value) {
+        return `${Math.max(0, Math.min(100, (value / MAX_AGE) * 100)).toFixed(3)}%`;
+      }
+
+      function penaltyValue(item) {
+        return Number.parseInt(item.penalty, 10) || 0;
+      }
+
+      function getState(item, currentAge) {
+        if (currentAge < item.range[0]) return "upcoming";
+        if (currentAge <= item.range[1]) return "prime";
+        if (currentAge <= item.lock) return "rescue";
+        return "closed";
+      }
+
+      function stageForAge(currentAge) {
+        return STAGE_STORIES.find((stage) => currentAge >= stage.min && currentAge <= stage.max) || STAGE_STORIES[STAGE_STORIES.length - 1];
+      }
+
+      function distanceText(item, currentAge) {
+        if (currentAge < item.range[0]) return `距开启还有 ${item.range[0] - currentAge} 年`;
+        if (currentAge <= item.range[1]) return `黄金期还剩 ${item.range[1] - currentAge} 年`;
+        if (currentAge <= item.lock) return `距锁定还有 ${item.lock - currentAge} 年`;
+        return `已超过锁定 ${currentAge - item.lock} 年`;
+      }
+
+      function adviceText(item, state, currentAge) {
+        if (state === "upcoming") {
+          return `当前还没到 ${item.title} 的核心窗口，但现在就是做准备的时间。先把会放大收益的前置条件补上，等窗口开启时才不会被动。`;
+        }
+
+        if (state === "prime") {
+          return `现在正是 ${item.title} 的高杠杆阶段。这个时期最怕“再等等”，因为你拖掉的不是进度，而是低成本高回报的那一段。`;
+        }
+
+        if (state === "rescue") {
+          return `${item.title} 已经进入补救期。现在仍有操作空间，但每推迟一年，通常都意味着更高成本、更低成功率，以及更大的协同压力。`;
+        }
+
+        return `${item.title} 在 ${item.lock} 岁左右就会明显锁死。${currentAge} 岁再回头做，只能依靠更高成本去争取局部效果，几乎不可能回到原始回报曲线。`;
+      }
+
+      function sortWindows(items, currentAge) {
+        const order = {
+          prime: 0,
+          rescue: 1,
+          upcoming: 2,
+          closed: 3
+        };
+
+        return [...items].sort((a, b) => {
+          const stateA = getState(a, currentAge);
+          const stateB = getState(b, currentAge);
+
+          if (order[stateA] !== order[stateB]) {
+            return order[stateA] - order[stateB];
+          }
+
+          const diffA = proximityScore(a, currentAge);
+          const diffB = proximityScore(b, currentAge);
+
+          if (diffA !== diffB) {
+            return diffA - diffB;
+          }
+
+          return a.lock - b.lock;
+        });
+      }
+
+      function proximityScore(item, currentAge) {
+        if (currentAge < item.range[0]) return item.range[0] - currentAge;
+        if (currentAge <= item.range[1]) return 0;
+        if (currentAge <= item.lock) return currentAge - item.range[1];
+        return currentAge - item.lock + 10;
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(max, Math.max(min, value));
+      }
+
+      function pressureIndex(items, currentAge) {
+        const pressure = items.reduce((sum, item) => {
+          const state = getState(item, currentAge);
+          if (state === "rescue") return sum + penaltyValue(item) * 0.6;
+          if (state === "closed") return sum + penaltyValue(item);
+          return sum;
+        }, 0);
+
+        return Math.round(clamp(pressure / (items.length * 90), 0, 1) * 100);
+      }
+
+      function summaryData(items, currentAge) {
+        const counts = {
+          upcoming: 0,
+          prime: 0,
+          rescue: 0,
+          closed: 0
+        };
+
+        items.forEach((item) => {
+          counts[getState(item, currentAge)] += 1;
+        });
+
+        return [
+          {
+            tone: "prime",
+            title: "黄金期窗口",
+            value: counts.prime,
+            desc: "此刻处在最佳执行区间，优先级应该最高。"
+          },
+          {
+            tone: "rescue",
+            title: "补救期窗口",
+            value: counts.rescue,
+            desc: "已经开始收紧，再拖会更难、更贵。"
+          },
+          {
+            tone: "upcoming",
+            title: "待开启窗口",
+            value: counts.upcoming,
+            desc: "还没到爆发点，但现在可以提前布局。"
+          },
+          {
+            tone: "closed",
+            title: "已关闭窗口",
+            value: counts.closed,
+            desc: "已越过锁定年龄，只适合做局部回补。"
+          }
+        ];
+      }
+
+      function updateOverview(items) {
+        if (!items.length) return;
+
+        const categories = new Set(items.map((item) => item.cat));
+        const minRange = Math.min(...items.map((item) => item.range[0]));
+        const maxLock = Math.max(...items.map((item) => item.lock));
+        refs.metricWindowCount.textContent = String(items.length);
+        refs.metricCategoryCount.textContent = String(categories.size);
+        refs.metricAgeSpan.textContent = `${minRange}-${maxLock}`;
+        refs.windowSectionTitle.textContent = `${items.length} 个关键人生窗口`;
+      }
+
+      function currentFocus(sortedItems) {
+        const selected = sortedItems.find((item) => item.id === selectedId);
+        return selected || sortedItems[0] || null;
+      }
+
+      function updateSliderBackground() {
+        const min = Number(refs.ageRange.min);
+        const max = Number(refs.ageRange.max);
+        const percent = ((age - min) / (max - min)) * 100;
+        refs.ageRange.style.background = `linear-gradient(90deg, var(--gold) 0%, var(--gold) ${percent}%, rgba(32, 23, 15, 0.08) ${percent}%, rgba(32, 23, 15, 0.08) 100%)`;
+      }
+
+      function renderPresets() {
+        refs.presetRow.innerHTML = PRESETS.map((value) => {
+          const activeClass = value === age ? "is-active" : "";
+          return `<button type="button" class="preset-btn ${activeClass}" data-age="${value}">${value} 岁视角</button>`;
+        }).join("");
+
+        refs.presetRow.querySelectorAll("[data-age]").forEach((button) => {
+          button.addEventListener("click", () => {
+            age = Number(button.dataset.age);
+            refs.ageRange.value = String(age);
+            render();
+          });
+        });
+      }
+
+      function renderSummary(items) {
+        refs.summaryGrid.innerHTML = summaryData(items, age)
+          .map(
+            (item) => `
+              <article class="summary-card" data-tone="${item.tone}">
+                <span>${item.title}</span>
+                <strong>${item.value}</strong>
+                <p>${item.desc}</p>
+              </article>
+            `
+          )
+          .join("");
+      }
+
+      function renderStage(items) {
+        const stage = stageForAge(age);
+        refs.stageTag.textContent = stage.tag;
+        refs.stageTitle.textContent = stage.title;
+        refs.stageDesc.textContent = stage.desc;
+        refs.pressureBadge.textContent = `时间张力 ${pressureIndex(items, age)}/100`;
+      }
+
+      function renderFocus(item) {
+        if (!item) return;
+
+        const state = getState(item, age);
+        refs.focusStatus.dataset.state = state;
+        refs.focusStatus.textContent = STATE_META[state].label;
+        refs.focusCategory.textContent = `${item.cat}窗口`;
+        refs.focusTitle.textContent = item.title;
+        refs.focusDesc.textContent = item.desc;
+        refs.focusAdvice.textContent = adviceText(item, state, age);
+        refs.focusTimelineText.textContent = `${STATE_META[state].note} 当前年龄 ${age} 岁，${distanceText(item, age)}。`;
+        refs.focusCountdown.textContent = distanceText(item, age);
+        refs.focusRange.textContent = `${item.range[0]} - ${item.range[1]} 岁`;
+        refs.focusLock.textContent = `${item.lock} 岁`;
+        refs.focusPenalty.textContent = item.penalty;
+        refs.focusCost.textContent = item.cost;
+
+        refs.focusPrime.style.left = percentage(item.range[0]);
+        refs.focusPrime.style.width = percentage(item.range[1] - item.range[0]);
+        refs.focusRescue.style.left = percentage(item.range[1]);
+        refs.focusRescue.style.width = percentage(item.lock - item.range[1]);
+        refs.focusMarker.style.left = percentage(age);
+      }
+
+      function renderCards(items) {
+        refs.cardsGrid.innerHTML = items
+          .map((item, index) => {
+            const state = getState(item, age);
+            const selectedClass = item.id === selectedId ? "is-selected" : "";
+            return `
+              <button
+                type="button"
+                class="window-card ${selectedClass}"
+                data-state="${state}"
+                data-id="${item.id}"
+                style="--delay:${index * 35}ms"
+                aria-pressed="${item.id === selectedId ? "true" : "false"}"
+              >
+                <div class="card-top">
+                  <span class="cat-chip">${item.cat}</span>
+                  <span class="state-chip">${STATE_META[state].label}</span>
+                </div>
+
+                <div>
+                  <h3>${item.title}</h3>
+                  <p>${item.desc}</p>
+                </div>
+
+                <div class="mini-timeline">
+                  <span class="mini-band prime" style="left:${percentage(item.range[0])};width:${percentage(item.range[1] - item.range[0])};"></span>
+                  <span class="mini-band rescue" style="left:${percentage(item.range[1])};width:${percentage(item.lock - item.range[1])};"></span>
+                  <span class="mini-marker" style="left:${percentage(age)};"></span>
+                </div>
+
+                <div class="card-meta">
+                  <div>
+                    <span>最佳期</span>
+                    <strong>${item.range[0]} - ${item.range[1]} 岁</strong>
+                  </div>
+                  <div>
+                    <span>锁定年龄</span>
+                    <strong>${item.lock} 岁</strong>
+                  </div>
+                  <div>
+                    <span>锁死强度</span>
+                    <strong>${item.penalty}</strong>
+                  </div>
+                  <div>
+                    <span>补偿成本</span>
+                    <strong>${item.cost}</strong>
+                  </div>
+                </div>
+
+                <span class="card-note">${distanceText(item, age)}</span>
+              </button>
+            `;
+          })
+          .join("");
+
+        refs.cardsGrid.querySelectorAll("[data-id]").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedId = Number(button.dataset.id);
+            render();
+            document.querySelector(".focus-panel")?.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest"
+            });
+          });
+        });
+      }
+
+      function render() {
+        refs.ageValue.textContent = String(age);
+        updateSliderBackground();
+        renderPresets();
+        updateOverview(windows);
+
+        const sorted = sortWindows(windows, age);
+        const focus = currentFocus(sorted);
+
+        if (!selectedId && focus) {
+          selectedId = focus.id;
+        }
+
+        renderStage(sorted);
+        renderSummary(sorted);
+        renderFocus(currentFocus(sorted));
+        renderCards(sorted);
+      }
+
+      async function loadWindows() {
+        try {
+          const response = await fetch("./data.json");
+          if (!response.ok) {
+            throw new Error("Failed to fetch local JSON");
+          }
+          return await response.json();
+        } catch (error) {
+          const inline = document.getElementById("windowsData");
+          return JSON.parse(inline.textContent);
+        }
+      }
+
+      refs.ageRange.addEventListener("input", (event) => {
+        age = Number(event.target.value);
+        render();
+      });
+
+      loadWindows().then((data) => {
+        windows = data;
+        render();
+      });
+    </script>
+  </body>
+</html>
